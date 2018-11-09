@@ -1,10 +1,9 @@
-#can i make a change?
 import urllib2
 import pickle
 
 # create the poodle database
-def poodle_build():
-    def web_crawler(seed):
+def buildPoodle():
+    def webCrawler(seed):
         def getAllNewLinksOnPage(page,prevLinks):
 
             response = urllib2.urlopen(page)
@@ -44,7 +43,7 @@ def poodle_build():
         print crawled	
         return urls
 
-    def page_scraper(urls):
+    def pageScraper(urls):
         index=[]
         url="http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/test_index.html"
         response = urllib2.urlopen(url)
@@ -80,7 +79,7 @@ def poodle_build():
                 
         return index
 
-    def create_graph(urls):
+    def createGraph(urls):
         def getAllNewLinksOnPage(page):
 
             response = urllib2.urlopen(page)
@@ -105,7 +104,7 @@ def poodle_build():
                     allFound=True   
             return links
 
-        def add_graph(graph, link, url):
+        def addGraph(graph, link, url):
             if not links == []:
                 if url in graph:
                     graph[url].append(link)
@@ -121,9 +120,9 @@ def poodle_build():
 
         # if not links == []:
         #     for link in links:
-        #         add_graph(graph, link, url)
+        #         addGraph(graph, link, url)
         # else:
-        add_graph(graph, links, url)
+        addGraph(graph, links, url)
 
         return graph
 
@@ -150,11 +149,11 @@ def poodle_build():
 
     seed = raw_input("Please provide a seed URL>>> ")
 
-    urls = web_crawler(seed)
+    urls = webCrawler(seed)
 
-    index = page_scraper(urls)
+    index = pageScraper(urls)
 
-    graph = create_graph(urls)
+    graph = createGraph(urls)
 
     ranks = computeRanks(graph)
 
@@ -163,7 +162,7 @@ def poodle_build():
     return index, graph, ranks
 
 # save the poodle database
-def poodle_dump(index, graph, ranks):
+def dumpPoodle(index, graph, ranks):
 
     with open("Index.txt", "wb") as f:
         pickle.dump(index, f)
@@ -177,7 +176,7 @@ def poodle_dump(index, graph, ranks):
     print "WOOF! POODLE data buried"
 
 # retrieve the poodle database
-def poodle_restore():
+def restorePoodle():
 
     with open("Index.txt", "rb") as f:
         index = pickle.load(f)
@@ -193,7 +192,7 @@ def poodle_restore():
     return index, graph, ranks
 
 # show the poodle database
-def poodle_print(index, graph, ranks):
+def printPoodle(index, graph, ranks):
     print "\n\nPOODLE INDEX ----------\n\n"
     print index
     print "\n\nPOODLE GRAPH ----------\n\n"
@@ -202,7 +201,7 @@ def poodle_print(index, graph, ranks):
     print ranks
 
 # show options available from this program
-def poodle_help():
+def helpPoodle():
     print "POODLE Help options: \n"
     print "-build \t\t Create the Poodle database"
     print "-dump \t\t Save the Poodle database"
@@ -212,11 +211,11 @@ def poodle_help():
     print "-nothing \t To exit the program"
 
 # exit the program
-def poodle_exit():
+def exitPoodle():
     print "WOOF! POODLE shutting down..."
 
 # search words
-def poodle_search(ranks, index, search):
+def searchPoodle(ranks, index, search):
 
     results = {}
 
@@ -240,20 +239,20 @@ while active:
     option = option.lower()
 
     if option == "-build":
-        index, graph, ranks = poodle_build()
+        index, graph, ranks = buildPoodle()
     elif option == "-dump":
-        poodle_dump(index, graph, ranks)
+        dumpPoodle(index, graph, ranks)
     elif option == "-restore":
-        index, graph, ranks = poodle_restore()
+        index, graph, ranks = restorePoodle()
     elif option == "-print":
-        poodle_print(index, graph, ranks)   
+        printPoodle(index, graph, ranks)   
     elif option == "-help":
-        poodle_help()
+        helpPoodle()
     elif option == "-nothing":
-        poodle_exit()
+        exitPoodle()
         active = False
     else:
         try:
-            poodle_search(ranks, index, option)
+            searchPoodle(ranks, index, option)
         except NameError:
             print "You must -build or -restore POODLE before searching"
