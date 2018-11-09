@@ -1,0 +1,12 @@
+(dp0
+S'http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/test_index.html'
+p1
+(lp2
+(lp3
+S'http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/webcrawler.html'
+p4
+aS'http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/content.html'
+p5
+aS'http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/pageRank.html'
+p6
+aas.
