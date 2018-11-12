@@ -39,43 +39,46 @@ def buildPoodle():
             toCrawl=list(set(toCrawl)|set(newLinks))
             
         for link in crawled:
-            urls.append(link[0])
-        print crawled	
+            urls.append(link)
+            # print urls
+        # print crawled	
+    
         return urls
 
     def pageScraper(urls):
         index=[]
-        url="http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/test_index.html"
-        response = urllib2.urlopen(url)
-        html = response.read()
+        # url="http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/test_index.html"
+        for url in urls:
+            response = urllib2.urlopen(url)
+            html = response.read()
 
-        pageText,pageWords="",[]
-        html=html[html.find("<body")+5:html.find("</body>")]
+            pageText,pageWords="",[]
+            html=html[html.find("<body")+5:html.find("</body>")]
 
-        finished=False
-        while not finished:
-            nextCloseTag=html.find(">")
-            nextOpenTag=html.find("<")
-            if nextOpenTag>-1:
-                content=" ".join(html[nextCloseTag+1:nextOpenTag].strip().split())
-                pageText=pageText+" "+content
-                html=html[nextOpenTag+1:]
-            else:
-                finished=True
-                
-        for word in pageText.split():
-            if word[0].isalnum() and len(word)>4:
-                if not word in pageWords:
-                    pageWords.append(word)
-        def addToIndex(index,keyword,url):
-            for entry in index:
-                if entry[0]==word:
-                    entry[1].append(url)
-                    return
-            index.append([word,[url]])
+            finished=False
+            while not finished:
+                nextCloseTag=html.find(">")
+                nextOpenTag=html.find("<")
+                if nextOpenTag>-1:
+                    content=" ".join(html[nextCloseTag+1:nextOpenTag].strip().split())
+                    pageText=pageText+" "+content
+                    html=html[nextOpenTag+1:]
+                else:
+                    finished=True
+                    
+            for word in pageText.split():
+                if word[0].isalnum() and len(word)>4:
+                    if not word in pageWords:
+                        pageWords.append(word)
+            def addToIndex(index,keyword,url):
+                for entry in index:
+                    if entry[0]==word:
+                        entry[1].append(url)
+                        return
+                index.append([word,[url]])
 
-        for word in pageWords:
-            addToIndex(index,word,url)	
+            for word in pageWords:
+                addToIndex(index,word,url)	
                 
         return index
 
@@ -104,26 +107,27 @@ def buildPoodle():
                     allFound=True   
             return links
 
-        def addGraph(graph, link, url):
+        def addGraph(graph, links, url):
             if not links == []:
                 if url in graph:
                     graph[url].append(link)
                 else:
-                    graph[url] = [link]
+                    graph[url] = getAllNewLinksOnPage(url)
             else:
                 graph[url] = []
 
         graph = {}
 
-        url="http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/test_index.html"
-        links = getAllNewLinksOnPage(url)
+        # url="http://193.61.191.117/~B00686896/com506/Python/B3%20Parsing%20Web%20Pages/test_web/test_index.html"
+        for url in urls:
+            links = getAllNewLinksOnPage(url)
 
-        # if not links == []:
-        #     for link in links:
-        #         addGraph(graph, link, url)
-        # else:
-        addGraph(graph, links, url)
-
+            if not links == []:
+                for link in links:
+                    addGraph(graph, link, url)
+            else:
+                addGraph(graph, links, url)
+        print "Graph: ", graph
         return graph
 
     def computeRanks(graph):
@@ -252,7 +256,5 @@ while active:
         exitPoodle()
         active = False
     else:
-        try:
-            searchPoodle(ranks, index, option)
-        except NameError:
-            print "You must -build or -restore POODLE before searching"
+        searchPoodle(ranks, index, option)
+        
